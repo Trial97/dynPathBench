@@ -1,33 +1,64 @@
 package main
 
 import (
+	"flag"
 	"math/rand"
+	"os"
 
 	"github.com/cgrates/cgrates/utils"
+
+	_ "testing"
 )
 
 func init() {
-	// gen = generateRandomTemplate(noGen)
-	gen = []pathInfo{
-		{
-			strPath: "Field1[*raw][0].Field2[0].Field3[*new]",
-			data:    "1001",
-		},
+	for _, arg := range os.Args[1:] {
+		if arg == "-randomGen" {
+			randomGen = true
+			break
+		}
 	}
-	for i := range gen {
-		gen[i].fp = utils.NewFullPath(gen[i].strPath, ".")
-		gen[i].pathItems = gen[i].fp.PathItems
-		for _, pt := range gen[i].fp.PathItems {
-			gen[i].path = append(gen[i].path, pt.Field)
-			gen[i].path = append(gen[i].path, pt.Index...)
+	if randomGen {
+		gen = generateRandomTemplate(noGen)
+	} else {
+		gen = []pathInfo{
+			{
+				strPath: "Field1[*raw][0].Field2[0].Field3[*new]",
+				data:    "1001",
+			},
+			{
+				strPath: "Field1[*raw][1].Field2[0].Field3[*new]",
+				data:    "1002",
+			},
+			{
+				strPath: "Field1[*raw][1].Field2[1].Field3[*new]",
+				data:    "1003",
+			},
+			{
+				strPath: "Field2[*raw][0].Field3[*new]",
+				data:    "1005",
+			},
+		}
+		for i := range gen {
+			gen[i].fp = utils.NewFullPath(gen[i].strPath, ".")
+			gen[i].pathItems = gen[i].fp.PathItems
+			for _, pt := range gen[i].fp.PathItems {
+				gen[i].path = append(gen[i].path, pt.Field)
+				gen[i].path = append(gen[i].path, pt.Index...)
+			}
 		}
 	}
 }
 
-const noGen = 10000
+const (
+	noGen = 10000
+)
 
-var generator = rand.New(rand.NewSource(42))
-var gen []pathInfo
+var (
+	randomGen bool
+	_         = flag.Bool("randomGen", false, "Run the tests with a random generated path")
+	generator = rand.New(rand.NewSource(42))
+	gen       []pathInfo
+)
 
 type pathInfo struct {
 	pathItems utils.PathItems

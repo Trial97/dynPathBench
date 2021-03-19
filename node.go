@@ -18,16 +18,16 @@ const (
 	NMSliceType
 )
 
-type Node struct {
+type DataNode struct {
 	Type  NMType
-	Map   map[string]*Node
-	Slice []*Node
+	Map   map[string]*DataNode
+	Slice []*DataNode
 	Value interface{}
 }
 
 //Field1[*raw][0].Field2[0].Field3[*new]",
 // Field1,*raw,0,Field2,0,Field3,*new
-func (n *Node) Field(path []string) (interface{}, error) {
+func (n *DataNode) Field(path []string) (interface{}, error) {
 	switch n.Type {
 	case NMDataType:
 		if len(path) != 0 {
@@ -62,13 +62,13 @@ func (n *Node) Field(path []string) (interface{}, error) {
 	return nil, ErrWrongPath
 }
 
-func (n *Node) Set(val interface{}, path []string) error {
+func (n *DataNode) Set(val interface{}, path []string) error {
 	if len(path) == 0 {
 		switch v := val.(type) {
-		case map[string]*Node:
+		case map[string]*DataNode:
 			n.Type = NMMapType
 			n.Map = v
-		case []*Node:
+		case []*DataNode:
 			n.Type = NMSliceType
 			n.Slice = v
 		default:
@@ -83,7 +83,7 @@ func (n *Node) Set(val interface{}, path []string) error {
 	case NMMapType:
 		node, has := n.Map[path[0]]
 		if !has {
-			node = CreateNode(path[1:])
+			node = NewDataNode(path[1:])
 			n.Map[path[0]] = node
 		}
 		return node.Set(val, path[1:])
@@ -93,7 +93,7 @@ func (n *Node) Set(val interface{}, path []string) error {
 			return err
 		}
 		if idx == len(n.Slice) {
-			node := CreateNode(path[1:])
+			node := NewDataNode(path[1:])
 			n.Slice = append(n.Slice, node)
 			return node.Set(val, path[1:])
 		}
@@ -108,13 +108,13 @@ func (n *Node) Set(val interface{}, path []string) error {
 	return ErrWrongPath
 }
 
-func (n Node) IsEmpty() bool {
+func (n DataNode) IsEmpty() bool {
 	return n.Value == nil ||
 		len(n.Map) == 0 ||
 		len(n.Slice) == 0
 }
 
-func (n *Node) Remove(path []string) error {
+func (n *DataNode) Remove(path []string) error {
 	if len(path) == 0 {
 		n.Map = nil
 		n.Slice = nil
@@ -154,18 +154,18 @@ func (n *Node) Remove(path []string) error {
 	return nil
 }
 
-func CreateNode(path []string) (n *Node) {
-	n = new(Node)
+func NewDataNode(path []string) (n *DataNode) {
+	n = new(DataNode)
 	if len(path) == 0 {
 		return
 	}
-	obj := CreateNode(path[1:])
+	obj := NewDataNode(path[1:])
 	if path[0] == "0" { // only support the 0 index when creating new array
 		n.Type = NMSliceType
-		n.Slice = []*Node{obj}
+		n.Slice = []*DataNode{obj}
 		return
 	}
 	n.Type = NMMapType
-	n.Map = map[string]*Node{path[0]: obj}
+	n.Map = map[string]*DataNode{path[0]: obj}
 	return
 }
