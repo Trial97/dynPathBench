@@ -58,6 +58,19 @@ Ignored the following because they do not support Set:
     PASS
     ok  	github.com/Trial97/github.com/Trial97/dynPathBench	9.142s
     ```
+    - Remove
+    ```
+    goos: linux
+    goarch: amd64
+    pkg: github.com/Trial97/github.com/Trial97/dynPathBench
+    cpu: Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz
+    BenchmarkNavigableMapRemove
+    BenchmarkNavigableMapRemove-8   	  991753	      1140 ns/op	     400 B/op	       6 allocs/op
+    BenchmarkNodeRemove
+    BenchmarkNodeRemove-8           	 2249872	       527.5 ns/op	       0 B/op	       0 allocs/op
+    PASS
+    ok  	github.com/Trial97/github.com/Trial97/dynPathBench	17.801s
+    ```
 
 2. For random generated path
     - Get
