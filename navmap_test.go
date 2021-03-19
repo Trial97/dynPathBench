@@ -132,7 +132,7 @@ func BenchmarkNodeField(b *testing.B) {
 	}
 }
 
-func BenchmarkOrderdNavigableMapRemove(b *testing.B) {
+func BenchmarkOrderdNavigableMapRemove_(b *testing.B) {
 	nms := make([]*utils.OrderedNavigableMap, b.N)
 	for i := 0; i < b.N; i++ {
 		nms[i] = utils.NewOrderedNavigableMap()
@@ -163,7 +163,7 @@ func BenchmarkOrderdNavigableMapRemove(b *testing.B) {
 	}
 }
 
-func BenchmarkNavigableMapRemve(b *testing.B) {
+func BenchmarkNavigableMapRemove(b *testing.B) {
 	nms := make([]utils.NavigableMap, b.N)
 	for i := 0; i < b.N; i++ {
 		nms[i] = utils.NavigableMap{}
@@ -183,8 +183,10 @@ func BenchmarkNavigableMapRemve(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		for j := range gen {
+			// fmt.Printf("%q\t", path[j][i][0].Field)
+			// fmt.Printf("%q\n", path[j][i][0].Index)
 			if err := nms[i].Remove(path[j][i]); err != nil {
-				b.Log(err)
+				b.Log(err, path[j][i])
 			}
 		}
 	}

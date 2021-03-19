@@ -25,14 +25,14 @@ func init() {
 				strPath: "Field1[*raw][0].Field2[0].Field3[*new]",
 				data:    "1001",
 			},
-			{
-				strPath: "Field1[*raw][1].Field2[0].Field3[*new]",
-				data:    "1002",
-			},
-			{
-				strPath: "Field1[*raw][1].Field2[1].Field3[*new]",
-				data:    "1003",
-			},
+			// {
+			// strPath: "Field1[*raw][1].Field2[0].Field3[*new]",
+			// data:    "1002",
+			// },
+			// {
+			// strPath: "Field1[*raw][1].Field2[1].Field3[*new]",
+			// data:    "1003",
+			// },
 			{
 				strPath: "Field2[*raw][0].Field3[*new]",
 				data:    "1005",
